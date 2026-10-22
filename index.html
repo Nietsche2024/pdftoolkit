@@ -1,0 +1,513 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Toolkit</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; worker-src 'self' blob:; img-src 'self' data: blob:">
+<style>
+:root{--bg:#f2f2f7;--card:rgba(255,255,255,.58);--bd:rgba(255,255,255,.7);--tx:#1c1c1e;--tx2:#6e6e73;--sep:rgba(60,60,67,.14);--ac:#007aff;--sh:0 8px 32px rgba(0,0,0,.08);--tw:130px}
+@media(prefers-color-scheme:dark){:root[data-t=system]{--bg:#000;--card:rgba(44,44,46,.55);--bd:rgba(255,255,255,.1);--tx:#f5f5f7;--tx2:#98989d;--sep:rgba(255,255,255,.12);--sh:0 8px 32px rgba(0,0,0,.4)}}
+:root[data-t=dark]{--bg:#000;--card:rgba(44,44,46,.55);--bd:rgba(255,255,255,.1);--tx:#f5f5f7;--tx2:#98989d;--sep:rgba(255,255,255,.12);--sh:0 8px 32px rgba(0,0,0,.4)}
+*{box-sizing:border-box;margin:0}body{font:14px "Segoe UI Variable","Segoe UI",system-ui,sans-serif;color:var(--tx);background:var(--bg);height:100vh;overflow:hidden;display:flex}
+body::before,body::after{content:"";position:fixed;width:520px;height:520px;border-radius:50%;filter:blur(110px);opacity:.45;z-index:-1}
+body::before{background:#5ac8fa;top:-140px;left:-100px}body::after{background:#bf5af2;bottom:-160px;right:-80px}
+.glass{background:var(--card);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border:1px solid var(--bd);box-shadow:var(--sh);border-radius:20px}
+aside{width:220px;margin:14px;margin-inline-end:0;padding:46px 12px 14px;display:flex;flex-direction:column;gap:4px}aside h1{font-size:17px;padding:0 10px 14px;font-weight:700}
+.nav{padding:9px 12px;border-radius:10px;cursor:pointer;color:var(--tx2);font-weight:500}.nav:hover{background:var(--sep)}.nav.on{background:var(--ac);color:#fff}
+main{flex:1;padding:46px 28px 20px;overflow:auto}main h2{font-size:26px;margin-bottom:4px}.sub{color:var(--tx2);margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.tool{padding:18px;cursor:pointer;transition:.18s}.tool:hover{transform:translateY(-3px)}.tool .ic{font-size:28px}.tool b{display:block;margin:8px 0 3px}.tool span{color:var(--tx2);font-size:12.5px}
+.panel{padding:22px;max-width:1000px}.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--sep)}.row:last-child{border:0}.row .g{flex:1}.row small{display:block;color:var(--tx2);font-size:12px}
+.btn{background:var(--ac);color:#fff;border:0;padding:9px 18px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}.btn:hover{filter:brightness(1.1)}.btn.s{background:var(--sep);color:var(--tx)}.btn.sm{padding:4px 10px;font-weight:500}
+input[type=text],select{background:var(--sep);border:1px solid transparent;color:var(--tx);padding:8px 11px;border-radius:9px;font:inherit;width:100%}input:focus,select:focus{outline:0;border-color:var(--ac)}
+label.f{display:block;margin:12px 0 5px;color:var(--tx2);font-size:12.5px}.oc{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 14px}
+.files{margin:14px 0;border-radius:14px;background:var(--sep);padding:4px 14px;min-height:50px}.back{cursor:pointer;color:var(--ac);margin-bottom:10px;display:inline-block}
+.seg{display:flex;background:var(--sep);border-radius:10px;padding:3px}.seg div{padding:6px 14px;border-radius:8px;cursor:pointer}.seg .on{background:var(--card);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.sw{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid transparent}.sw.on{border-color:var(--tx)}.sw2{display:flex;gap:10px}
+.tg{direction:ltr;width:44px;height:26px;border-radius:13px;background:var(--sep);position:relative;cursor:pointer}.tg::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}.tg.on{background:#34c759}.tg.on::after{left:21px}
+.sup{padding:24px;margin-bottom:16px;background:linear-gradient(135deg,rgba(255,45,85,.22),rgba(255,149,0,.22));text-align:center}.sup .btn{font-size:15px;padding:12px 26px;background:linear-gradient(135deg,#ff2d55,#ff9500);box-shadow:0 6px 20px rgba(255,45,85,.35)}
+pre{white-space:pre-wrap;font:12.5px Consolas,monospace;background:var(--sep);padding:12px;border-radius:12px;margin-top:12px}
+.tb{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:10px 0}.tb .sub{margin:0}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--tw),1fr));gap:12px;max-height:420px;overflow:auto;padding:6px;border-radius:14px;background:var(--sep)}
+.th{position:relative;border-radius:12px;padding:6px;background:var(--card);cursor:pointer;text-align:center;border:2px solid transparent;transition:.12s;user-select:none}.th:hover{transform:translateY(-2px)}
+.th .im{height:calc(var(--tw)*1.3);display:grid;place-items:center;overflow:hidden;border-radius:6px;background:rgba(128,128,128,.12)}
+.th img{max-width:100%;max-height:100%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:transform .2s}.th span{font-size:12px;color:var(--tx2)}
+.th.on{border-color:var(--ac)}.th.on::after{content:"✓";position:absolute;top:8px;inset-inline-end:8px;background:var(--ac);color:#fff;width:20px;height:20px;border-radius:50%;font-size:12px;display:grid;place-items:center}
+.th .ab{position:absolute;top:8px;inset-inline-start:8px;display:none;gap:4px}.th:hover .ab{display:flex}.th.dr{opacity:.35}
+.sec{margin:22px 0 10px;font-size:15px;font-weight:600;color:var(--tx2)}textarea{background:var(--sep);border:1px solid transparent;color:var(--tx);padding:10px 12px;border-radius:9px;font:inherit;width:100%;min-height:200px;resize:vertical}textarea:focus{outline:0;border-color:var(--ac)}
+aside{overflow:auto}#ov{position:fixed;inset:10px;display:none;place-items:center;font-size:26px;font-weight:600;background:color-mix(in srgb,var(--ac) 20%,transparent);backdrop-filter:blur(10px);border:3px dashed var(--ac);border-radius:24px;z-index:99;pointer-events:none}#ov.on{display:grid}
+#pal{position:fixed;inset:0;display:none;align-items:flex-start;justify-content:center;padding-top:14vh;background:rgba(0,0,0,.25);backdrop-filter:blur(6px);z-index:100}#pal.on{display:flex}#pal .glass{width:580px;max-width:92vw;padding:12px}#pr{margin-top:8px}#pr .pi{padding:10px 12px;border-radius:10px;cursor:pointer;display:flex;gap:8px;align-items:baseline}#pr .pi small{color:var(--tx2);margin-inline-start:auto;font-size:12px}#pr .pi.on{background:var(--ac);color:#fff}#pr .pi.on small{color:#ffffffb8}.sw3{width:100px;height:74px;border-radius:14px;cursor:pointer;display:flex;align-items:flex-end;padding:6px;box-shadow:inset 0 0 0 1px rgba(128,128,128,.3)}.sw3 span{background:rgba(0,0,0,.55);color:#fff;border-radius:6px;padding:1px 6px;font-size:11px}
+</style></head><body>
+<aside class="glass"><h1>🧰 Toolkit</h1><div id="nv"></div></aside>
+<main id="m"></main>
+<script src="node_modules/pdfjs-dist/build/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='node_modules/pdfjs-dist/build/pdf.worker.min.js';
+const $=(s,e=document)=>e.querySelector(s),PP='https://www.paypal.com/donate/?hosted_button_id=5ZAE37YBUL6Z8',MORE='https://developed-by-mo.web.app';
+const S=Object.assign({theme:'system',accent:'#007aff',out:'',reveal:true,ts:130,lang:'en',fav:[],rec:[]},JSON.parse(localStorage.s||'{}'));
+const save=()=>localStorage.s=JSON.stringify(S);
+function apply(){document.documentElement.dir=S.lang=='ar'?'rtl':'ltr';document.documentElement.dataset.t=S.theme;document.documentElement.style.setProperty('--ac',S.accent);document.documentElement.style.setProperty('--tw',S.ts+'px');api.theme(S.theme)}
+const parseR=(s,n)=>{const r=[];String(s||'').split(',').forEach(x=>{const[a,b]=x.split('-').map(v=>parseInt(v));if(!a)return;for(let i=a;i<=(b||a)&&i<=n;i++)r.push(i-1)});return r};
+const toR=s=>{const a=[...s].sort((x,y)=>x-y),o=[];for(let i=0;i<a.length;){let j=i;while(a[j+1]==a[j]+1)j++;o.push(j>i?`${a[i]+1}-${a[j]+1}`:a[i]+1);i=j+1}return o.join(',')};
+const PDF=['pdf'],IMG=['jpg','jpeg','png'],sl=(k,l,o)=>({k,l,t:'select',o}),tx=(k,l,ph,d='')=>({k,l,t:'text',ph,d});
+const PG=tx('pages','Pages — type, or click thumbnails','e.g. 1-3,7'),PA=tx('pages','Pages — empty = all (or click thumbnails)','');
+const TOOLS=[
+{id:'merge',n:'Merge',i:'🔗',d:'Combine PDFs into one',ext:PDF,multi:1,min:2},
+{id:'split',n:'Split',i:'✂️',d:'Each page or by ranges',ext:PDF,pick:1,o:[sl('mode','Mode',[['each','Every page'],['ranges','Ranges']]),tx('pages','Parts — each comma group becomes a file','1-3,4-6')]},
+{id:'extract',n:'Extract Pages',i:'📤',d:'Pull selected pages out',ext:PDF,pick:1,o:[PG]},
+{id:'delete',n:'Delete Pages',i:'🗑️',d:'Remove selected pages',ext:PDF,pick:1,o:[PG]},
+{id:'organize',n:'Organize',i:'🗂️',d:'Drag, rotate, remove pages',ext:PDF,pick:'o'},
+{id:'rotate',n:'Rotate',i:'🔄',d:'Rotate all or some pages',ext:PDF,pick:1,o:[sl('angle','Angle',[[90,'90° clockwise'],[180,'180°'],[270,'90° counter-clockwise']]),PA]},
+{id:'duplicate',n:'Duplicate Pages',i:'📑',d:'Copy selected pages in place',ext:PDF,pick:1,o:[PG]},
+{id:'blank',n:'Insert Blank',i:'📃',d:'Blank page after selected',ext:PDF,pick:1,o:[PG]},
+{id:'crop',n:'Crop Margins',i:'🔲',d:'Trim edges by percent',ext:PDF,pick:1,o:[tx('t','Top %','','0'),tx('r','Right %','','0'),tx('b','Bottom %','','0'),tx('l','Left %','','0'),PA]},
+{id:'reverse',n:'Reverse Order',i:'↕️',d:'Flip page order',ext:PDF},
+{id:'compress',n:'Compress',i:'🗜️',d:'Optimize file structure',ext:PDF,multi:1},
+{id:'img2pdf',n:'Images → PDF',i:'🖼️',d:'JPG / PNG into one PDF',ext:IMG,multi:1},
+{id:'pdf2img',n:'PDF → Images',i:'📷',d:'Export pages as PNG/JPG',ext:PDF,pick:1,local:1,o:[sl('format','Format',[['png','PNG'],['jpg','JPG']]),sl('scale','Quality',[[1.5,'Normal'],[2,'High'],[3,'Very high']]),PA]},
+{id:'text',n:'Extract Text',i:'🔤',d:'Save page text as .txt',ext:PDF,pick:1,local:1,o:[PA]},
+{id:'watermark',n:'Watermark',i:'💧',d:'Add diagonal text mark',ext:PDF,pick:1,o:[tx('text','Text','','CONFIDENTIAL'),tx('opacity','Opacity %','','25'),PA]},
+{id:'numbers',n:'Page Numbers',i:'🔢',d:'Add “1 / N” footers',ext:PDF,pick:1,o:[PA]},
+{id:'meta',n:'Metadata',i:'🏷️',d:'Edit or wipe properties',ext:PDF,o:[tx('title','Title (empty = keep)',''),tx('author','Author',''),tx('subject','Subject',''),tx('keywords','Keywords (comma separated)',''),sl('clear','Mode',[[0,'Update filled fields'],[1,'Remove ALL metadata']])]},
+{id:'info',n:'Document Info',i:'ℹ️',d:'Pages, size, metadata',ext:PDF,multi:1}];
+const m=$('#m');let cur=null,files=[],doc=null,n=0,chosen=new Set(),L=[],cache={},io=null,lastK=null,dragK=null;
+const CATS=[['all','🏠','Home'],['edit','✏️','Edit'],['convert','🔄','Convert'],['create','✨','Create'],['optimize','⚡','Optimize'],['images','🖼️','Images'],['media','🎬','Media'],['text','📝','Text'],['dev','💻','Developer'],['calc','🧮','Calculate'],['money','💶','Finance'],['files','📁','Files'],['settings','⚙️','Settings']],NM={edit:'Edit',convert:'Convert',create:'Create',optimize:'Optimize',images:'Images',media:'Media',text:'Text',dev:'Developer',calc:'Calculate',money:'Finance',files:'Files'};
+const GRP={edit:'merge split extract delete organize rotate duplicate blank crop reverse watermark numbers',convert:'pdf2img text imgconv docx2pdf html2pdf csv2pdf img2pdf audio video',create:'newpdf textpdf img2pdf qrcode',optimize:'compress meta info',images:'imgconv imgfx palette img2pdf pdf2img qrcode',media:'audio video gif trim',text:'textops findrep textpdf text lorem casestyle',dev:'json base64 urlenc hash uuid password timestamp color regex numbase jwt',calc:'units percent dates',money:'vat loan compound discount',files:'zip unzip bulkrename filehash'};
+let pg='all';
+function nav(){$('#nv').innerHTML=CATS.map(c=>`<div class="nav ${pg==c[0]?'on':''}" data-p="${c[0]}">${c[1]} ${c[2]}</div>`).join('');document.querySelectorAll('.nav').forEach(e=>e.onclick=()=>go(e.dataset.p))}
+function go(p){pg=p;cur=null;files=[];doc=null;nav();p=='settings'?settings():home(p)}
+function home(p='all'){const ks=p=='all'?Object.keys(GRP):[p],card=t=>`<div class="glass tool" data-id="${t.id}"><div class="ic">${t.i}</div><b>${t.n}</b><span>${t.d}</span></div>`;
+m.innerHTML=`<h2>${p=='all'?'Tools':NM[p]}</h2><p class="sub">Everything runs locally on your PC. Your files never leave it.</p><button class="btn s" id="sb">🔍 Search tools · Ctrl+K</button>`+(p=='all'?xtra():'')+ks.map(k=>`${p=='all'?`<div class="sec">${NM[k]}</div>`:''}<div class="grid">${GRP[k].split(' ').map(i=>card(TOOLS.find(t=>t.id==i))).join('')}</div>`).join('');
+m.querySelectorAll('.tool').forEach(e=>e.onclick=()=>{cur=TOOLS.find(t=>t.id==e.dataset.id);files=[];doc=null;tool()})}
+function tool(){const t=cur;m.innerHTML=`<span class="back" id="bk">‹ Tools</span><h2>${t.i} ${t.n} <span id="fv" style="cursor:pointer;color:#ff9f0a">${S.fav.includes(t.id)?'★':'☆'}</span></h2><p class="sub">${t.d}</p><div class="glass panel">
+<button class="btn s" id="add">+ Add ${[IMG,IM].includes(t.ext)?'images':t.ext==PDF?'PDF'+(t.multi?' files':''):'files'}</button><div class="files" id="fl"></div><div id="pk"></div><div class="oc">
+${(t.o||[]).map(o=>`<div><label class="f">${o.l}</label>${o.t=='area'?`<textarea data-k="${o.k}"></textarea>`:o.t=='select'?`<select data-k="${o.k}">${o.o.map(x=>`<option value="${x[0]}">${x[1]}</option>`).join('')}</select>`:`<input type="text" data-k="${o.k}" placeholder="${o.ph||''}" value="${o.d||''}">`}</div>`).join('')}</div>
+<div style="margin-top:18px"><button class="btn" id="go">Run</button></div><div id="res"></div></div>`;
+$('#bk').onclick=()=>go(pg);$('#fv').onclick=()=>{S.fav=S.fav.includes(t.id)?S.fav.filter(x=>x!=t.id):[...S.fav,t.id];save();$('#fv').textContent=S.fav.includes(t.id)?'★':'☆'};S.rec=[t.id,...S.rec.filter(x=>x!=t.id)].slice(0,8);save();if(t.nofile){$('#add').style.display=$('#fl').style.display='none'}$('#add').onclick=async()=>addFiles(await api.pick({ext:t.ext,multi:t.multi}));
+$('#go').onclick=run;if(t.live)document.querySelectorAll('[data-k]').forEach(e=>e.oninput=e.onchange=run);const p=$('[data-k=pages]');if(p)p.oninput=()=>{chosen=new Set(parseR(p.value,n));paint()};list()}
+function list(){const e=$('#fl');e.innerHTML=files.length?files.map((f,i)=>`<div class="row"><span class="g">${f.split(/[\\/]/).pop()}<small>${f}</small></span>${cur.multi?`<button class="btn s sm" data-u="${i}">↑</button><button class="btn s sm" data-d="${i}">↓</button>`:''}<button class="btn s sm" data-x="${i}">✕</button></div>`).join(''):'<div class="row"><small>No files yet</small></div>';
+e.onclick=ev=>{const b=ev.target.dataset,i=+(b.u??b.d??b.x);if(isNaN(i))return;if('x' in b){files.splice(i,1);if(cur.pick){doc=null;$('#pk').innerHTML=''}}else{const j='u' in b?i-1:i+1;if(j<0||j>=files.length)return;[files[i],files[j]]=[files[j],files[i]]}list()}}
+async function openDoc(){const pk=$('#pk');pk.innerHTML='<p class="sub" style="margin:12px 0">Loading preview…</p>';
+try{doc=await pdfjsLib.getDocument({data:await api.read(files[0]),isEvalSupported:false}).promise}catch(e){doc=null;pk.innerHTML='<pre>⚠️ Cannot preview this PDF (encrypted or damaged)</pre>';return}
+n=doc.numPages;cache={};chosen=new Set();L=[...Array(n).keys()].map(i=>({i,r:0}));draw()}
+const thumbOf=i=>cache[i]||(cache[i]=(async()=>{const p=await doc.getPage(i+1),w=p.getViewport({scale:1}).width,vp=p.getViewport({scale:Math.max(150,S.ts)*1.2/w}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;await p.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;return c.toDataURL('image/jpeg',.8)})());
+function draw(){const og=cur.pick=='o',pk=$('#pk'),Q={all:'All',none:'None',inv:'Invert',odd:'Odd',even:'Even'};
+pk.innerHTML=`<div class="tb">${og?'<small class="sub">Drag to reorder · ↻ rotate · ✕ remove</small><button class="btn s sm" id="rs">Reset</button>':Object.keys(Q).map(k=>`<button class="btn s sm" data-q="${k}">${Q[k]}</button>`).join('')+'<small class="sub" id="ct" style="margin-inline-start:auto"></small>'}</div><div class="thumbs" id="tg"></div>`;
+const g=$('#tg');if(io)io.disconnect();io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){io.unobserve(x.target);const im=$('img',x.target);thumbOf(+x.target.dataset.i).then(u=>im.src=u)}}),{rootMargin:'400px'});
+L.forEach((e,k)=>{const d=document.createElement('div');d.className='th';d.dataset.i=e.i;d.dataset.k=k;d.innerHTML=`<div class="im"><img style="transform:rotate(${e.r}deg)"></div><span>${e.i+1}</span>${og?'<div class="ab"><button class="btn s sm" data-r>↻</button><button class="btn s sm" data-x>✕</button></div>':''}`;
+if(og){d.draggable=true;d.ondragstart=()=>{dragK=k;d.classList.add('dr')};d.ondragend=()=>d.classList.remove('dr');d.ondragover=ev=>ev.preventDefault();d.ondrop=()=>{if(dragK===null||dragK==k)return;const[x]=L.splice(dragK,1);L.splice(k,0,x);dragK=null;draw()}}
+g.appendChild(d);io.observe(d)});
+g.onclick=ev=>{const th=ev.target.closest('.th');if(!th)return;const k=+th.dataset.k,i=+th.dataset.i;
+if(og){if(ev.target.closest('[data-r]')){L[k].r=(L[k].r+90)%360;$('img',th).style.transform=`rotate(${L[k].r}deg)`}else if(ev.target.closest('[data-x]')){L.splice(k,1);draw()}return}
+if(ev.shiftKey&&lastK!==null){const a=Math.min(lastK,i),b=Math.max(lastK,i);for(let x=a;x<=b;x++)chosen.add(x)}else chosen.has(i)?chosen.delete(i):chosen.add(i);lastK=i;paint()};
+if(og)$('#rs').onclick=()=>{L=[...Array(n).keys()].map(i=>({i,r:0}));draw()};
+else pk.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const q=b.dataset.q,all=[...Array(n).keys()];chosen=new Set(q=='all'?all:q=='none'?[]:q=='inv'?all.filter(i=>!chosen.has(i)):all.filter(i=>(i%2==0)==(q=='odd')));paint()});paint()}
+function paint(){document.querySelectorAll('.th').forEach(d=>d.classList.toggle('on',cur.pick!='o'&&chosen.has(+d.dataset.i)));const c=$('#ct');if(c)c.textContent=chosen.size+' of '+n+' selected';const p=$('[data-k=pages]');if(p&&document.activeElement!==p)p.value=toR(chosen)}
+const base=f=>f.split(/[\\/]/).pop().replace(/\.pdf$/i,''),dirOf=f=>S.out||f.replace(/[\\/][^\\/]*$/,'');
+const LOCAL={async imgconv(o){const out=[],type={png:'image/png',jpg:'image/jpeg',webp:'image/webp'}[o.format],sc=Math.max(1,+o.scale||100)/100;
+for(const f of files){const ext=f.split('.').pop().toLowerCase(),by=await api.read(f),im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('Cannot read '+f));i.src=URL.createObjectURL(new Blob([by],{type:'image/'+(ext=='jpg'?'jpeg':ext=='svg'?'svg+xml':ext)}))});
+const w=Math.round((im.naturalWidth||1024)*sc),hh=Math.round((im.naturalHeight||im.naturalWidth||1024)*sc),c=document.createElement('canvas');c.width=w;c.height=hh;const x=c.getContext('2d');if(o.format=='jpg'){x.fillStyle='#fff';x.fillRect(0,0,w,hh)}x.drawImage(im,0,0,w,hh);
+const b=await new Promise(r=>c.toBlob(r,type,+o.q));out.push({name:f.split(/[\\/]/).pop().replace(/\.\w+$/,'')+'_converted.'+o.format,data:new Uint8Array(await b.arrayBuffer())})}
+return api.write(dirOf(files[0]),'',out)},
+async pdf2img(o){const idx=o.pages?parseR(o.pages,n):[...Array(n).keys()],jpg=o.format=='jpg',out=[],b=base(files[0]);
+for(const i of idx){const p=await doc.getPage(i+1),vp=p.getViewport({scale:+o.scale}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;const x=c.getContext('2d');if(jpg){x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height)}
+await p.render({canvasContext:x,viewport:vp}).promise;const bl=await new Promise(r=>c.toBlob(r,jpg?'image/jpeg':'image/png',.92));out.push({name:`${b}_${String(i+1).padStart(3,'0')}.${jpg?'jpg':'png'}`,data:new Uint8Array(await bl.arrayBuffer())})}
+return api.write(dirOf(files[0]),b+'_images',out)},
+async text(o){const idx=o.pages?parseR(o.pages,n):[...Array(n).keys()],P=[];for(const i of idx){const t=await(await doc.getPage(i+1)).getTextContent();let s='';t.items.forEach(x=>s+=x.str+(x.hasEOL?'\n':' '));P.push(`--- Page ${i+1} ---\n${s.trim()}`)}
+return api.write(dirOf(files[0]),'',[{name:base(files[0])+'.txt',data:new TextEncoder().encode(P.join('\n\n'))}])}};
+async function run(){const t=cur,r=$('#res');if(!t.nofile&&(!files.length||(t.min&&files.length<t.min))){r.innerHTML='<pre>Please add '+(t.min?'at least '+t.min+' files.':'a file first.')+'</pre>';return}
+const o={out:S.out};document.querySelectorAll('[data-k]').forEach(x=>o[x.dataset.k]=x.value);if(t.pick=='o')o.order=JSON.stringify(L);
+if(t.live){let s;try{s=await LIVE[t.id](o)}catch(e){r.innerHTML='<pre>⚠️ '+String(e.message).replace(/</g,'&lt;')+'</pre>';return}r.innerHTML='<pre id="out"></pre><button class="btn s sm" id="cp" style="margin-top:8px">Copy</button>';$('#out').textContent=s;$('#cp').onclick=()=>navigator.clipboard.writeText(s);return}
+r.innerHTML='<pre>Working…</pre>';let x;try{x=t.local?await LOCAL[t.id](o):await api.run(t.id,files,o)}catch(e){x={ok:0,error:e.message}}
+if(!x.ok){r.innerHTML=`<pre>⚠️ ${x.error}</pre>`;return}if(x.html){r.innerHTML=x.html;return}
+r.innerHTML=`<pre>✅ Done${x.files.length?' — '+x.files.length+' file(s) saved':''}\n${x.files.join('\n')}${x.msg?'\n'+x.msg:''}</pre>`;if(t.id=='qrcode'){const by=await api.read(x.files[0]);r.insertAdjacentHTML('beforeend',`<img style="margin-top:12px;border-radius:14px;background:#fff;padding:10px;max-width:260px" src="${URL.createObjectURL(new Blob([by],{type:'image/png'}))}">`)}if(x.files[0]&&S.reveal&&t.id!='qrcode')api.reveal(x.files[0])}
+function settings(){m.innerHTML=`<h2>Settings</h2><p class="sub">Appearance, output and support</p>
+<div class="glass sup"><h3>❤️ Support the Developer</h3><p class="sub" style="margin:6px 0 16px">If this tool saves you time, a small donation keeps new tools coming.</p><button class="btn" id="don">Donate via PayPal</button>
+<div style="margin-top:12px"><button class="btn s" id="more">🧩 More Extensions &amp; Apps</button></div></div>
+<div class="glass panel" style="max-width:none"><div class="row"><span class="g">Appearance<small>Light, Dark or follow Windows</small></span><div class="seg" id="th">${['light','dark','system'].map(v=>`<div data-v="${v}" class="${S.theme==v?'on':''}">${v[0].toUpperCase()+v.slice(1)}</div>`).join('')}</div></div>
+<div class="row"><span class="g">Accent color</span><div class="sw2" id="ac">${['#007aff','#34c759','#ff9500','#ff2d55','#af52de','#5ac8fa'].map(c=>`<div class="sw ${S.accent==c?'on':''}" data-c="${c}" style="background:${c}"></div>`).join('')}</div></div>
+<div class="row"><span class="g">Thumbnail size<small>Page previews inside tools</small></span><div class="seg" id="ts">${[[100,'Small'],[130,'Medium'],[170,'Large']].map(v=>`<div data-s="${v[0]}" class="${S.ts==v[0]?'on':''}">${v[1]}</div>`).join('')}</div></div>
+<div class="row"><span class="g">Language</span><div class="seg" id="lg"><div data-l="en" class="${S.lang=='en'?'on':''}">English</div><div data-l="ar" class="${S.lang=='ar'?'on':''}">العربية</div></div></div>
+<div class="row"><span class="g">Output folder<small>${S.out||'Same folder as the source file'}</small></span><button class="btn s sm" id="pf">Choose…</button><button class="btn s sm" id="rf">Reset</button></div>
+<div class="row"><span class="g">Show result in Explorer<small>Open the folder after each job</small></span><div class="tg ${S.reveal?'on':''}" id="rv"></div></div>
+<div class="row"><span class="g">About<small>Toolkit 1.3 · Developed by Mo · 100% local processing</small></span></div></div>`;
+$('#don').onclick=()=>api.open(PP);$('#more').onclick=()=>api.open(MORE);
+$('#th').onclick=e=>{if(e.target.dataset.v){S.theme=e.target.dataset.v;save();apply();settings()}};
+$('#ac').onclick=e=>{if(e.target.dataset.c){S.accent=e.target.dataset.c;save();apply();settings()}};
+$('#lg').onclick=e=>{if(e.target.dataset.l){S.lang=e.target.dataset.l;save();apply();nav();settings()}};$('#ts').onclick=e=>{if(e.target.dataset.s){S.ts=+e.target.dataset.s;save();apply();settings()}};
+$('#pf').onclick=async()=>{const f=await api.folder();if(f){S.out=f;save();settings()}};$('#rf').onclick=()=>{S.out='';save();settings()};
+$('#rv').onclick=e=>{S.reveal=!S.reveal;save();e.target.classList.toggle('on',S.reveal)}}
+const IM=['jpg','jpeg','png','webp','gif','bmp','svg'];
+TOOLS.push(
+{id:'imgconv',n:'Image Converter',i:'🖼️',d:'PNG, JPG, WebP, SVG and resize',ext:IM,multi:1,local:1,o:[sl('format','Format',[['png','PNG'],['jpg','JPG'],['webp','WebP']]),tx('scale','Scale %','','100'),sl('q','Quality',[[.92,'High'],[.75,'Normal'],[.5,'Small file']])]},
+{id:'docx2pdf',n:'Word → PDF',i:'📘',d:'Convert .docx documents',ext:['docx'],multi:1},
+{id:'html2pdf',n:'HTML / Text → PDF',i:'🌐',d:'From .html, .txt or .md files',ext:['html','htm','txt','md'],multi:1},
+{id:'csv2pdf',n:'CSV → PDF',i:'📊',d:'Turn a table into a PDF',ext:['csv'],multi:1},
+{id:'textpdf',n:'Write → PDF',i:'✍️',d:'Type text and save as PDF',nofile:1,o:[tx('name','File name','','document'),{k:'text',l:'Your text',t:'area'}]},
+{id:'newpdf',n:'New Blank PDF',i:'🆕',d:'Create empty pages',nofile:1,o:[tx('count','Page count','','1'),sl('size','Page size',[['a4','A4'],['letter','Letter'],['a5','A5']])]});
+const AR=Object.fromEntries(`Home|الرئيسية
+Tools|الأدوات
+Edit|تعديل
+Convert|تحويل
+Create|إنشاء
+Optimize|تحسين ومعلومات
+Settings|الإعدادات
+Everything runs locally on your PC. Your files never leave it.|كل شيء يعمل محلياً على جهازك. ملفاتك لا تغادره أبداً.
+Merge|دمج
+Combine PDFs into one|ادمج عدة ملفات PDF في ملف واحد
+Split|تقسيم
+Each page or by ranges|كل صفحة أو حسب نطاقات
+Extract Pages|استخراج صفحات
+Pull selected pages out|استخرج الصفحات المحددة
+Delete Pages|حذف صفحات
+Remove selected pages|احذف الصفحات المحددة
+Organize|ترتيب الصفحات
+Drag, rotate, remove pages|اسحب وأدر واحذف الصفحات
+Rotate|تدوير
+Rotate all or some pages|أدر كل الصفحات أو بعضها
+Duplicate Pages|تكرار صفحات
+Copy selected pages in place|انسخ الصفحات المحددة
+Insert Blank|إدراج صفحة فارغة
+Blank page after selected|صفحة فارغة بعد المحدد
+Crop Margins|قص الهوامش
+Trim edges by percent|قص الحواف بنسبة مئوية
+Reverse Order|عكس الترتيب
+Flip page order|اعكس ترتيب الصفحات
+Compress|ضغط
+Optimize file structure|حسّن بنية الملف
+Images → PDF|صور إلى PDF
+JPG / PNG into one PDF|حوّل الصور إلى ملف PDF واحد
+PDF → Images|PDF إلى صور
+Export pages as PNG/JPG|صدّر الصفحات كصور
+Extract Text|استخراج النص
+Save page text as .txt|احفظ نص الصفحات كملف txt
+Watermark|علامة مائية
+Add diagonal text mark|أضف علامة نصية قطرية
+Page Numbers|ترقيم الصفحات
+Add “1 / N” footers|أضف ترقيماً أسفل الصفحات
+Metadata|بيانات الملف
+Edit or wipe properties|عدّل الخصائص أو امسحها
+Document Info|معلومات المستند
+Pages, size, metadata|الصفحات والحجم والخصائص
+Image Converter|محوّل الصور
+PNG, JPG, WebP, SVG and resize|PNG وJPG وWebP وSVG مع تغيير الحجم
+Word → PDF|Word إلى PDF
+Convert .docx documents|حوّل مستندات docx
+HTML / Text → PDF|HTML / نص إلى PDF
+From .html, .txt or .md files|من ملفات html وtxt وmd
+CSV → PDF|CSV إلى PDF
+Turn a table into a PDF|حوّل الجدول إلى PDF
+Write → PDF|اكتب → PDF
+Type text and save as PDF|اكتب نصاً واحفظه كملف PDF
+New Blank PDF|PDF فارغ جديد
+Create empty pages|أنشئ صفحات فارغة
+Mode|الوضع
+Every page|كل صفحة
+Ranges|نطاقات
+Parts — each comma group becomes a file|الأجزاء — كل مجموعة بفاصلة ملف مستقل
+Pages — type, or click thumbnails|الصفحات — اكتب أو اضغط على المصغرات
+Pages — empty = all (or click thumbnails)|الصفحات — فارغ = الكل (أو اضغط على المصغرات)
+Angle|الزاوية
+90° clockwise|90° مع عقارب الساعة
+90° counter-clockwise|90° عكس عقارب الساعة
+Top %|أعلى %
+Right %|يمين %
+Bottom %|أسفل %
+Left %|يسار %
+Format|الصيغة
+Quality|الجودة
+Normal|عادية
+High|عالية
+Very high|عالية جداً
+Small file|حجم صغير
+Text|النص
+Opacity %|الشفافية %
+Title (empty = keep)|العنوان (فارغ = بدون تغيير)
+Author|المؤلف
+Subject|الموضوع
+Keywords (comma separated)|الكلمات المفتاحية (مفصولة بفاصلة)
+Update filled fields|تحديث الحقول المعبأة فقط
+Remove ALL metadata|حذف كل البيانات
+Scale %|المقياس %
+File name|اسم الملف
+Your text|نصك
+Page count|عدد الصفحات
+Page size|حجم الصفحة
++ Add PDF|+ إضافة PDF
++ Add PDF files|+ إضافة ملفات PDF
++ Add images|+ إضافة صور
++ Add files|+ إضافة ملفات
+Run|تنفيذ
+No files yet|لا توجد ملفات بعد
+Loading preview…|جارٍ تحميل المعاينة…
+All|الكل
+None|لا شيء
+Invert|عكس
+Odd|فردية
+Even|زوجية
+Reset|إعادة
+Drag to reorder · ↻ rotate · ✕ remove|اسحب لإعادة الترتيب · ↻ تدوير · ✕ حذف
+‹ Tools|› الأدوات
+Cannot preview this PDF (encrypted or damaged)|تعذّرت معاينة الملف (مشفّر أو تالف)
+Please add a file first.|الرجاء إضافة ملف أولاً.
+Working…|جارٍ العمل…
+Appearance, output and support|المظهر والحفظ والدعم
+Support the Developer|ادعم المطوّر
+If this tool saves you time, a small donation keeps new tools coming.|إذا وفّر لك البرنامج وقتك، فتبرع صغير يساعد على إضافة أدوات جديدة.
+Donate via PayPal|تبرع عبر PayPal
+More Extensions & Apps|مزيد من الإضافات والبرامج
+Appearance|المظهر
+Light, Dark or follow Windows|فاتح أو داكن أو حسب ويندوز
+Light|فاتح
+Dark|داكن
+System|النظام
+Accent color|اللون الرئيسي
+Thumbnail size|حجم المصغرات
+Page previews inside tools|معاينة الصفحات داخل الأدوات
+Small|صغير
+Medium|متوسط
+Large|كبير
+Language|اللغة
+Output folder|مجلد الحفظ
+Same folder as the source file|نفس مجلد الملف الأصلي
+Choose…|اختيار…
+Show result in Explorer|إظهار الناتج في المستكشف
+Open the folder after each job|افتح المجلد بعد كل عملية
+About|حول
+Toolkit 1.3 · Developed by Mo · 100% local processing|Toolkit 1.3 · تطوير Mo · معالجة محلية 100%`.split('\n').map(x=>x.split('|')));
+const AR2=[[/(\d+) of (\d+) selected/,'$1 / $2 محددة'],[/^✅ Done/,'✅ تم'],[/file\(s\) saved/,'ملف محفوظ'],[/^Please add at least (\d+) files\./,'الرجاء إضافة $1 ملفات على الأقل.']];
+function trs(s){if(AR[s])return AR[s];const k=s.match(/^(\S+) (.+)$/);if(k&&AR[k[2]])return k[1]+' '+AR[k[2]];for(const[r,v]of AR2)s=s.replace(r,v);return s}
+function trAll(){if(S.lang!='ar')return;const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){const v=n.nodeValue.trim();if(!v)continue;const r=trs(v);if(r!==v)n.nodeValue=r}
+document.querySelectorAll('[placeholder]').forEach(e=>{const r=trs(e.placeholder);if(r!==e.placeholder)e.placeholder=r})}
+new MutationObserver(trAll).observe(document.body,{childList:true,subtree:true,characterData:true});
+const ta=(k,l)=>({k,l,t:'area'}),NF={nofile:1,live:1},ALL=['*'];
+TOOLS.push(
+{id:'imgfx',n:'Image Effects',i:'🎨',d:'Rotate, flip, filters, text',ext:IM,multi:1,local:1,o:[sl('rot','Rotate',[[0,'0°'],[90,'90°'],[180,'180°'],[270,'270°']]),sl('flip','Flip',[['n','None'],['h','Horizontal'],['v','Vertical']]),sl('fx','Filter',[['none','None'],['gray','Grayscale'],['sepia','Sepia'],['invert','Invert'],['blur','Blur']]),tx('br','Brightness %','','100'),tx('text','Overlay text (optional)',''),sl('format','Format',[['png','PNG'],['jpg','JPG'],['webp','WebP']])]},
+{id:'qrcode',n:'QR Code',i:'📱',d:'Make a QR from text or link',nofile:1,o:[ta('text','Text or link'),tx('size','Size (px)','','512')]},
+{id:'textops',n:'Text Tools',i:'🔠',d:'Case, sort, clean, count',...NF,o:[sl('op','Operation',[['upper','UPPER CASE'],['lower','lower case'],['title','Title Case'],['sort','Sort A → Z'],['sortd','Sort Z → A'],['uniq','Remove duplicate lines'],['rev','Reverse lines'],['trim','Trim spaces'],['empty','Remove empty lines'],['num','Number lines'],['stats','Count words & characters']]),ta('text','Text')]},
+{id:'findrep',n:'Find & Replace',i:'🔎',d:'Replace text, regex supported',...NF,o:[ta('text','Text'),tx('find','Find',''),tx('rep','Replace with',''),sl('rx','Regular expression',[[0,'No'],[1,'Yes']])]},
+{id:'json',n:'JSON Tool',i:'🧾',d:'Format, minify, validate',...NF,o:[sl('mode','Mode',[['4','Format (4 spaces)'],['2','Format (2 spaces)'],['min','Minify']]),ta('text','Text')]},
+{id:'base64',n:'Base64',i:'🔐',d:'Encode or decode text',...NF,o:[sl('mode','Mode',[['enc','Encode'],['dec','Decode']]),ta('text','Text')]},
+{id:'urlenc',n:'URL Encode',i:'🔗',d:'Encode or decode URLs',...NF,o:[sl('mode','Mode',[['enc','Encode'],['dec','Decode']]),ta('text','Text')]},
+{id:'hash',n:'Hash Text',i:'#️⃣',d:'SHA-1 / 256 / 384 / 512',...NF,o:[sl('alg','Algorithm',['SHA-256','SHA-1','SHA-384','SHA-512'].map(x=>[x,x])),ta('text','Text')]},
+{id:'uuid',n:'UUID Generator',i:'🆔',d:'Random unique IDs',...NF,o:[tx('n','Count','','5')]},
+{id:'password',n:'Password Generator',i:'🔑',d:'Strong random passwords',...NF,o:[tx('len','Length','','16'),tx('n','Count','','5'),sl('sym','Symbols',[[1,'Include'],[0,'Letters & digits only']])]},
+{id:'timestamp',n:'Timestamp',i:'⏱️',d:'Unix time ↔ date',...NF,o:[tx('text','Unix time or date (empty = now)','')]},
+{id:'color',n:'Color Converter',i:'🌈',d:'HEX, RGB, HSL',...NF,o:[tx('text','Color','','#007aff')]},
+{id:'regex',n:'Regex Tester',i:'🧪',d:'Test patterns on text',...NF,o:[tx('pattern','Pattern',''),tx('flags','Flags','','g'),ta('text','Text')]},
+{id:'units',n:'Unit Converter',i:'📏',d:'Length, weight, data, speed, temp',...NF,o:[tx('text','Conversion','e.g. 5 km to mi · 100 f to c · 2 gb to mb')]},
+{id:'percent',n:'Percentage',i:'➗',d:'Percent of, change, ratio',...NF,o:[sl('mode','Mode',[['of','X% of Y'],['is','X is what % of Y'],['chg','Change from X to Y']]),tx('a','X',''),tx('b','Y','')]},
+{id:'dates',n:'Date Calculator',i:'📅',d:'Difference between dates, age',...NF,o:[tx('d1','From date (YYYY-MM-DD)',''),tx('d2','To date (empty = today)','')]},
+{id:'zip',n:'Zip Files',i:'🗃️',d:'Pack files into a zip',ext:ALL,multi:1},
+{id:'unzip',n:'Unzip',i:'📂',d:'Extract zip archives',ext:['zip'],multi:1},
+{id:'bulkrename',n:'Bulk Rename',i:'🏷️',d:'Rename or copy with new names',ext:ALL,multi:1,o:[tx('prefix','Prefix',''),tx('suffix','Suffix',''),sl('num','Numbering',[[0,'Keep original names'],[1,'Replace with numbers']]),sl('act','Action',[['copy','Copy (safe)'],['move','Rename in place']])]},
+{id:'filehash',n:'File Hash',i:'🧬',d:'SHA-256 checksum',ext:ALL,multi:1,o:[sl('alg','Algorithm',[['sha256','SHA-256'],['sha1','SHA-1'],['md5','MD5'],['sha512','SHA-512']])]});
+const LIVE={
+textops:o=>{const t=o.text,L=t.split('\n'),W=(t.match(/\S+/g)||[]).length;return({upper:()=>t.toUpperCase(),lower:()=>t.toLowerCase(),title:()=>t.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase()),sort:()=>L.sort((a,b)=>a.localeCompare(b)).join('\n'),sortd:()=>L.sort((a,b)=>b.localeCompare(a)).join('\n'),uniq:()=>[...new Set(L)].join('\n'),rev:()=>L.reverse().join('\n'),trim:()=>L.map(l=>l.trim().replace(/\s+/g,' ')).join('\n'),empty:()=>L.filter(l=>l.trim()).join('\n'),num:()=>L.map((l,i)=>`${i+1}. ${l}`).join('\n'),stats:()=>`Characters: ${t.length}\nWords: ${W}\nLines: ${L.length}\nReading time: ~${Math.max(1,Math.round(W/200))} min`}[o.op]||(()=>t))()},
+findrep:o=>o.find?o.text.replace(new RegExp(o.rx=='1'?o.find:o.find.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'),o.rep):o.text,
+json:o=>{const v=JSON.parse(o.text);return o.mode=='min'?JSON.stringify(v):JSON.stringify(v,null,+o.mode)},
+base64:o=>o.mode=='dec'?new TextDecoder().decode(Uint8Array.from(atob(o.text.trim()),c=>c.charCodeAt(0))):btoa([...new TextEncoder().encode(o.text)].map(b=>String.fromCharCode(b)).join('')),
+urlenc:o=>o.mode=='dec'?decodeURIComponent(o.text):encodeURIComponent(o.text),
+hash:async o=>[...new Uint8Array(await crypto.subtle.digest(o.alg,new TextEncoder().encode(o.text)))].map(b=>b.toString(16).padStart(2,'0')).join(''),
+uuid:o=>Array.from({length:Math.min(100,+o.n||1)},()=>crypto.randomUUID()).join('\n'),
+password:o=>{const len=Math.min(128,Math.max(4,+o.len||16)),cs='abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'+(o.sym=='1'?'!@#$%^&*()-_=+?':'');return Array.from({length:Math.min(50,+o.n||5)},()=>{const a=new Uint32Array(len);crypto.getRandomValues(a);return[...a].map(x=>cs[x%cs.length]).join('')}).join('\n')},
+timestamp:o=>{const v=o.text.trim();if(!v)return'Now: '+Math.floor(Date.now()/1000);const d=/^\d+$/.test(v)?new Date(v.length>11?+v:+v*1000):new Date(v);if(isNaN(d))throw new Error('Invalid date');return`Unix: ${Math.floor(d/1000)}\nMilliseconds: ${+d}\nISO (UTC): ${d.toISOString()}\nLocal: ${d.toLocaleString()}`},
+color:o=>{const v=o.text.trim();let r,g,b,m;if(m=v.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i)){let x=m[1];if(x.length==3)x=[...x].map(c=>c+c).join('');[r,g,b]=[0,2,4].map(i=>parseInt(x.substr(i,2),16))}else if(m=v.match(/(\d+)\D+(\d+)\D+(\d+)/)){[r,g,b]=m.slice(1).map(Number)}else throw new Error('Use #RRGGBB or rgb(r,g,b)');
+const R=r/255,G=g/255,B=b/255,mx=Math.max(R,G,B),mn=Math.min(R,G,B),l=(mx+mn)/2,d=mx-mn,s=d?d/(1-Math.abs(2*l-1)):0,hh=d?60*(mx==R?((G-B)/d%6):mx==G?(B-R)/d+2:(R-G)/d+4):0;
+return`HEX: #${[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('')}\nRGB: rgb(${r}, ${g}, ${b})\nHSL: hsl(${Math.round((hh+360)%360)}, ${Math.round(s*100)}%, ${Math.round(l*100)}%)`},
+regex:o=>{const f=(o.flags||'g').includes('g')?o.flags||'g':(o.flags||'')+'g',ms=[...o.text.matchAll(new RegExp(o.pattern,f))];return ms.length?ms.map((x,i)=>`#${i+1} @${x.index}: ${x[0]}${x.length>1?'   groups: '+x.slice(1).join(' | '):''}`).join('\n'):'No matches'},
+units:o=>{const m=o.text.trim().match(/^(-?[\d.]+)\s*(\S+)\s*(?:to|->|→)\s*(\S+)$/i);if(!m)throw new Error('Format: 5 km to mi');const v=+m[1],a=m[2].toLowerCase(),b=m[3].toLowerCase(),T=['c','f','k'];
+if(T.includes(a)&&T.includes(b)){const c={c:v,f:(v-32)*5/9,k:v-273.15}[a];return`${v} ${m[2]} = ${+({c,f:c*9/5+32,k:c+273.15}[b]).toFixed(4)} ${m[3]}`}
+const u=[{m:1,km:1e3,cm:.01,mm:.001,mi:1609.344,yd:.9144,ft:.3048,in:.0254},{kg:1,g:.001,mg:1e-6,t:1e3,lb:.45359237,oz:.028349523},{b:1,kb:1024,mb:1048576,gb:1073741824,tb:1099511627776},{'m/s':1,'km/h':1/3.6,mph:.44704}].find(x=>a in x&&b in x);if(!u)throw new Error('Unknown or mixed units');return`${v} ${m[2]} = ${+(v*u[a]/u[b]).toPrecision(8)} ${m[3]}`},
+percent:o=>{const a=+o.a,b=+o.b;if(o.a===''||o.b===''||isNaN(a)||isNaN(b))throw new Error('Enter two numbers');return{of:`${a}% of ${b} = ${+(a*b/100).toPrecision(10)}`,is:`${a} is ${+(a/b*100).toFixed(4)}% of ${b}`,chg:`Change from ${a} to ${b} = ${+((b-a)/a*100).toFixed(4)}%`}[o.mode]},
+dates:o=>{const a=new Date(o.d1),b=o.d2?new Date(o.d2):new Date();if(!o.d1||isNaN(a)||isNaN(b))throw new Error('Use YYYY-MM-DD');const[x,y]=a<b?[a,b]:[b,a];let Y=y.getFullYear()-x.getFullYear(),M=y.getMonth()-x.getMonth(),D=y.getDate()-x.getDate();if(D<0){M--;D+=new Date(y.getFullYear(),y.getMonth(),0).getDate()}if(M<0){Y--;M+=12}const n=Math.round((y-x)/864e5);return`${Y} years, ${M} months, ${D} days\nTotal: ${n} days (${(n/7).toFixed(1)} weeks)`},
+vat:o=>{const a=+o.a,r=+o.rate/100;if(o.a===''||isNaN(a))throw new Error('Enter an amount');const n=o.mode=='gross'?a/(1+r):a,g=n*(1+r);return`Net: ${n.toFixed(2)}\nVAT (${o.rate}%): ${(g-n).toFixed(2)}\nGross: ${g.toFixed(2)}`},
+loan:o=>{const P=+o.p,r=+o.r/1200,n=+o.y*12;if(!P||!n)throw new Error('Enter amount and years');const m=r?P*r/(1-Math.pow(1+r,-n)):P/n;return`Monthly payment: ${m.toFixed(2)}\nTotal paid: ${(m*n).toFixed(2)}\nTotal interest: ${(m*n-P).toFixed(2)}`},
+compound:o=>{let b=+o.p||0;const r=+o.r/1200,n=Math.round(+o.y*12),d=+o.d||0,inv=b+d*n;for(let i=0;i<n;i++)b=b*(1+r)+d;return`Final amount: ${b.toFixed(2)}\nTotal invested: ${inv.toFixed(2)}\nInterest earned: ${(b-inv).toFixed(2)}`},
+discount:o=>{const p=+o.p,d=+o.d;if(!p)throw new Error('Enter a price');return`Final price: ${(p*(1-d/100)).toFixed(2)}\nYou save: ${(p*d/100).toFixed(2)}`},
+casestyle:o=>{const w=o.text.replace(/([a-z])([A-Z])/g,'$1 $2').split(/[\s_\-]+/).filter(Boolean).map(x=>x.toLowerCase()),C=x=>x[0].toUpperCase()+x.slice(1);return[`camelCase: ${w.map((x,i)=>i?C(x):x).join('')}`,`PascalCase: ${w.map(C).join('')}`,`snake_case: ${w.join('_')}`,`kebab-case: ${w.join('-')}`,`CONSTANT_CASE: ${w.join('_').toUpperCase()}`,`Title Case: ${w.map(C).join(' ')}`].join('\n')},
+numbase:o=>{const v=BigInt(o.text.trim());return`Decimal: ${v}\nHex: 0x${v.toString(16)}\nBinary: 0b${v.toString(2)}\nOctal: 0o${v.toString(8)}`},
+jwt:o=>{const p=o.text.trim().split('.');if(p.length<2)throw new Error('Not a JWT');const d=s=>JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0)))),h=d(p[0]),b=d(p[1]);return'Header:\n'+JSON.stringify(h,null,2)+'\n\nPayload:\n'+JSON.stringify(b,null,2)+(b.exp?'\n\nExpires: '+new Date(b.exp*1000).toLocaleString():'')},
+lorem:o=>{const W='lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'.split(' ');return Array.from({length:Math.min(20,+o.n||3)},(_,i)=>{const s=Array.from({length:45},(_,j)=>W[(i*7+j*5+j*j)%W.length]).join(' ');return s[0].toUpperCase()+s.slice(1)+'.'}).join('\n\n')}
+};//ENDLIVE
+const loadImg=async f=>{const ext=f.split('.').pop().toLowerCase(),by=await api.read(f);return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('Cannot read '+f));i.src=URL.createObjectURL(new Blob([by],{type:'image/'+(ext=='jpg'?'jpeg':ext=='svg'?'svg+xml':ext)}))})};
+LOCAL.imgfx=async o=>{const out=[],type={png:'image/png',jpg:'image/jpeg',webp:'image/webp'}[o.format],rot=+o.rot;
+for(const f of files){const im=await loadImg(f),w=im.naturalWidth||1024,h=im.naturalHeight||1024,c=document.createElement('canvas');c.width=rot%180?h:w;c.height=rot%180?w:h;const x=c.getContext('2d');if(o.format=='jpg'){x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height)}
+x.filter=`${{none:'',gray:'grayscale(1)',sepia:'sepia(1)',invert:'invert(1)',blur:'blur(4px)'}[o.fx]} brightness(${(+o.br||100)/100})`;x.translate(c.width/2,c.height/2);x.rotate(rot*Math.PI/180);x.scale(o.flip=='h'?-1:1,o.flip=='v'?-1:1);x.drawImage(im,-w/2,-h/2,w,h);
+if(o.text){x.setTransform(1,0,0,1,0,0);x.filter='none';const s=Math.max(16,c.width/25);x.font=`bold ${s}px "Segoe UI",Arial`;x.textAlign='right';x.lineWidth=s/8;x.strokeStyle='rgba(0,0,0,.6)';x.fillStyle='rgba(255,255,255,.9)';x.strokeText(o.text,c.width-s,c.height-s);x.fillText(o.text,c.width-s,c.height-s)}
+const b=await new Promise(r=>c.toBlob(r,type,.92));out.push({name:f.split(/[\\/]/).pop().replace(/\.\w+$/,'')+'_edited.'+o.format,data:new Uint8Array(await b.arrayBuffer())})}
+return api.write(dirOf(files[0]),'',out)};
+function addFiles(r){const t=cur;if(!t||!t.ext)return;r=r.filter(p=>t.ext.includes('*')||t.ext.includes(p.split('.').pop().toLowerCase()));if(!r.length)return;files=t.multi?[...files,...r]:r.slice(0,1);list();if(t.pick&&!t.multi)openDoc()}
+function openWith(ps){const x=p=>p.split('.').pop().toLowerCase(),ts=TOOLS.filter(t=>t.ext&&(t.multi||ps.length==1)&&ps.every(p=>t.ext.includes('*')||t.ext.includes(x(p)))).sort((a,b)=>a.ext.includes('*')-b.ext.includes('*'));
+m.innerHTML=`<h2>Open with…</h2><p class="sub">${ps.length} · ${ps.map(p=>p.split(/[\\/]/).pop()).join(', ').slice(0,90)}</p>`+(ts.length?`<div class="grid">${ts.map(t=>`<div class="glass tool" data-id="${t.id}"><div class="ic">${t.i}</div><b>${t.n}</b><span>${t.d}</span></div>`).join('')}</div>`:'<p class="sub">No tool accepts this file type</p>');
+m.querySelectorAll('.tool').forEach(e=>e.onclick=()=>{cur=TOOLS.find(t=>t.id==e.dataset.id);files=[];doc=null;tool();addFiles(ps)})}
+const ov=document.createElement('div');ov.id='ov';ov.textContent='⬇️ Drop files here';document.body.appendChild(ov);
+addEventListener('dragenter',e=>{if(e.dataTransfer.types.includes('Files')){e.preventDefault();ov.classList.add('on')}});addEventListener('dragleave',e=>{if(!e.relatedTarget)ov.classList.remove('on')});addEventListener('dragover',e=>e.preventDefault());
+addEventListener('drop',e=>{e.preventDefault();ov.classList.remove('on');const fl=[...e.dataTransfer.files];if(!fl.length||pg=='settings')return;const ps=fl.map(f=>api.path(f));cur&&cur.ext?addFiles(ps):openWith(ps)});
+const AR_NEW=`Images|الصور
+Text|النصوص
+Developer|المطوّرون
+Calculate|الحاسبات
+Files|الملفات
+Copy|نسخ
+⬇️ Drop files here|أفلت الملفات هنا
+Open with…|افتح باستخدام…
+No tool accepts this file type|لا توجد أداة تدعم هذا النوع من الملفات
+Image Effects|تأثيرات الصور
+Rotate, flip, filters, text|تدوير وقلب وفلاتر ونص
+QR Code|رمز QR
+Make a QR from text or link|أنشئ رمز QR من نص أو رابط
+Text Tools|أدوات النصوص
+Case, sort, clean, count|حالة الأحرف والترتيب والتنظيف والعد
+Find & Replace|بحث واستبدال
+Replace text, regex supported|استبدل النصوص مع دعم regex
+JSON Tool|أداة JSON
+Format, minify, validate|تنسيق وتصغير وتحقق
+Encode or decode text|ترميز أو فك ترميز النص
+URL Encode|ترميز الروابط
+Encode or decode URLs|ترميز أو فك ترميز الروابط
+Hash Text|تجزئة النص
+UUID Generator|مولّد UUID
+Random unique IDs|معرّفات عشوائية فريدة
+Password Generator|مولّد كلمات المرور
+Strong random passwords|كلمات مرور عشوائية قوية
+Timestamp|الطابع الزمني
+Unix time ↔ date|وقت Unix ↔ تاريخ
+Color Converter|محوّل الألوان
+Regex Tester|اختبار Regex
+Test patterns on text|اختبر الأنماط على النص
+Unit Converter|محوّل الوحدات
+Length, weight, data, speed, temp|الطول والوزن والبيانات والسرعة والحرارة
+Percentage|النسبة المئوية
+Percent of, change, ratio|نسبة وتغيّر ونسبة مئوية
+Date Calculator|حاسبة التواريخ
+Difference between dates, age|الفرق بين تاريخين والعمر
+Zip Files|ضغط ZIP
+Pack files into a zip|اجمع الملفات في ملف zip
+Unzip|فك الضغط
+Extract zip archives|استخرج ملفات zip
+Bulk Rename|إعادة تسمية جماعية
+Rename or copy with new names|أعد تسمية الملفات أو انسخها بأسماء جديدة
+File Hash|بصمة الملف
+SHA-256 checksum|مجموع التحقق SHA-256
+Operation|العملية
+Find|بحث
+Replace with|استبدال بـ
+Regular expression|تعبير نمطي
+Algorithm|الخوارزمية
+Count|العدد
+Length|الطول
+Symbols|الرموز
+Include|تضمين
+Letters & digits only|حروف وأرقام فقط
+Pattern|النمط
+Flags|الخيارات
+Conversion|التحويل
+From date (YYYY-MM-DD)|من تاريخ (YYYY-MM-DD)
+To date (empty = today)|إلى تاريخ (فارغ = اليوم)
+Unix time or date (empty = now)|وقت Unix أو تاريخ (فارغ = الآن)
+Text or link|نص أو رابط
+Size (px)|الحجم (بكسل)
+Flip|قلب
+Filter|فلتر
+Horizontal|أفقي
+Vertical|عمودي
+Grayscale|رمادي
+Sepia|سيبيا
+Blur|ضبابي
+Brightness %|السطوع %
+Overlay text (optional)|نص فوق الصورة (اختياري)
+Prefix|بادئة
+Suffix|لاحقة
+Numbering|الترقيم
+Action|الإجراء
+Keep original names|إبقاء الأسماء الأصلية
+Replace with numbers|استبدال بأرقام
+Copy (safe)|نسخ (آمن)
+Rename in place|إعادة التسمية في مكانها
+Encode|ترميز
+Decode|فك الترميز
+No|لا
+Yes|نعم`.split('\n').map(x=>x.split('|'));AR_NEW.forEach(([k,v])=>AR[k]=v);
+const AUD=['mp3','wav','flac','ogg','m4a','aac','opus','wma'],VID=['mp4','mkv','mov','avi','webm','flv','wmv','m4v'];
+TOOLS.push(
+{id:'audio',n:'Audio Converter',i:'🎧',d:'Convert audio or extract it from video',ext:[...AUD,...VID],multi:1,o:[sl('fmt','Format',['mp3','m4a','wav','flac','ogg'].map(x=>[x,x.toUpperCase()])),sl('br','Bitrate',[['128k','128 kbps'],['192k','192 kbps'],['320k','320 kbps']])]},
+{id:'video',n:'Video Converter',i:'🎞️',d:'Convert, resize, compress',ext:VID,multi:1,o:[sl('fmt','Format',[['mp4','MP4'],['webm','WebM'],['mkv','MKV']]),sl('h','Resolution',[[0,'Original'],[1080,'1080p'],[720,'720p'],[480,'480p']]),sl('crf','Quality',[[20,'High'],[24,'Normal'],[28,'Small file']])]},
+{id:'gif',n:'Video → GIF',i:'🌀',d:'Animated GIF from a clip',ext:VID,o:[tx('start','Start (seconds or mm:ss)','','0'),tx('dur','Duration (s)','','5'),tx('fps','FPS','','12'),tx('w','Width (px)','','480')]},
+{id:'trim',n:'Cut / Trim',i:'✂️',d:'Trim audio or video',ext:[...AUD,...VID],o:[tx('start','Start (seconds or mm:ss)','','0'),tx('end','End (seconds or mm:ss)',''),sl('mode','Mode',[['copy','Fast copy'],['precise','Precise (slower)']])]},
+{id:'palette',n:'Color Palette',i:'🖌️',d:'Extract dominant colors',ext:IM,multi:1,local:1},
+{id:'vat',n:'VAT Calculator',i:'🧾',d:'Net ↔ gross with VAT',...NF,o:[tx('a','Amount',''),tx('rate','VAT rate %','','19'),sl('mode','Mode',[['net','Net → Gross'],['gross','Gross → Net']])]},
+{id:'loan',n:'Loan Calculator',i:'🏦',d:'Monthly payment and interest',...NF,o:[tx('p','Amount',''),tx('r','Interest rate % (yearly)','','4'),tx('y','Years','','10')]},
+{id:'compound',n:'Compound Interest',i:'📈',d:'Savings growth over time',...NF,o:[tx('p','Starting amount','','1000'),tx('d','Monthly deposit','','100'),tx('r','Interest rate % (yearly)','','5'),tx('y','Years','','10')]},
+{id:'discount',n:'Discount',i:'💸',d:'Price after discount',...NF,o:[tx('p','Price',''),tx('d','Discount %','','20')]},
+{id:'casestyle',n:'Case Styles',i:'🔡',d:'camelCase, snake_case, kebab-case',...NF,o:[ta('text','Text')]},
+{id:'numbase',n:'Number Base',i:'🔟',d:'Decimal, hex, binary, octal',...NF,o:[tx('text','Number','e.g. 255 · 0xff · 0b1010')]},
+{id:'jwt',n:'JWT Decoder',i:'🪪',d:'Read token header and payload',...NF,o:[ta('text','Token')]},
+{id:'lorem',n:'Lorem Ipsum',i:'📜',d:'Placeholder text',...NF,o:[tx('n','Paragraphs','','3')]});
+LOCAL.palette=async o=>{let html='';for(const f of files){const im=await loadImg(f),c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.drawImage(im,0,0,64,64);const d=x.getImageData(0,0,64,64).data,B={};
+for(let i=0;i<d.length;i+=4){if(d[i+3]<128)continue;const k=(d[i]>>4)<<8|(d[i+1]>>4)<<4|d[i+2]>>4,e=B[k]||(B[k]=[0,0,0,0]);e[0]+=d[i];e[1]+=d[i+1];e[2]+=d[i+2];e[3]++}
+const top=Object.values(B).sort((a,b)=>b[3]-a[3]).slice(0,8).map(e=>'#'+[0,1,2].map(j=>Math.round(e[j]/e[3]).toString(16).padStart(2,'0')).join(''));
+html+=`<div style="margin-top:14px"><b>${f.split(/[\\/]/).pop()}</b><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">${top.map(c=>`<div class="sw3" data-c="${c}" style="background:${c}"><span>${c}</span></div>`).join('')}</div></div>`}
+return{ok:1,html,files:[]}};
+const CARDF=t=>`<div class="glass tool" data-id="${t.id}"><div class="ic">${t.i}</div><b>${t.n}</b><span>${t.d}</span></div>`;
+function xtra(){const g=(a,l)=>{const ts=a.map(i=>TOOLS.find(t=>t.id==i)).filter(Boolean);return ts.length?`<div class="sec">${l}</div><div class="grid">${ts.map(CARDF).join('')}</div>`:''};return g(S.fav,'⭐ Favorites')+g(S.rec.filter(i=>!S.fav.includes(i)).slice(0,4),'🕘 Recent')}
+const pal=document.createElement('div');pal.id='pal';pal.innerHTML='<div class="glass"><input type="text" id="pq" placeholder="Search tools… (Ctrl+K)"><div id="pr"></div></div>';document.body.appendChild(pal);
+let pi=0,pl=[];const ARN=t=>S.lang=='ar'&&AR[t]||t;
+function pfill(){const q=$('#pq').value.toLowerCase();pl=TOOLS.filter(t=>!q||(t.n+' '+t.d+' '+(AR[t.n]||'')+' '+(AR[t.d]||'')).toLowerCase().includes(q)).slice(0,9);pi=0;$('#pr').innerHTML=pl.map((t,i)=>`<div class="pi ${i?'':'on'}" data-i="${i}">${t.i} ${ARN(t.n)}<small>${ARN(t.d)}</small></div>`).join('')}
+function openPal(){pal.classList.add('on');$('#pq').value='';pfill();$('#pq').focus()}
+function popen(t){pal.classList.remove('on');cur=t;files=[];doc=null;tool()}
+addEventListener('keydown',e=>{const on=pal.classList.contains('on');if(e.ctrlKey&&e.key=='k'){e.preventDefault();openPal()}else if(e.key=='Escape')pal.classList.remove('on');
+else if(on&&(e.key=='ArrowDown'||e.key=='ArrowUp')){e.preventDefault();pi=(pi+(e.key=='ArrowDown'?1:pl.length-1))%pl.length;[...$('#pr').children].forEach((c,i)=>c.classList.toggle('on',i==pi))}else if(on&&e.key=='Enter'&&pl[pi])popen(pl[pi])});
+$('#pq').oninput=pfill;$('#pr').onclick=e=>{const c=e.target.closest('.pi');if(c)popen(pl[+c.dataset.i])};pal.onclick=e=>{if(e.target==pal)pal.classList.remove('on')};
+document.addEventListener('click',e=>{if(e.target.id=='sb')openPal();const s=e.target.closest('.sw3');if(s)navigator.clipboard.writeText(s.dataset.c)});
+`Media|الوسائط
+Finance|المالية
+Favorites|المفضلة
+Recent|الأخيرة
+Search tools · Ctrl+K|ابحث عن أداة · Ctrl+K
+Search tools… (Ctrl+K)|ابحث عن أداة… (Ctrl+K)
+Audio Converter|محوّل الصوت
+Convert audio or extract it from video|حوّل الصوت أو استخرجه من فيديو
+Video Converter|محوّل الفيديو
+Convert, resize, compress|حوّل وغيّر الحجم واضغط
+Video → GIF|فيديو إلى GIF
+Animated GIF from a clip|صورة متحركة من مقطع
+Cut / Trim|قص وتقطيع
+Trim audio or video|اقطع جزءاً من صوت أو فيديو
+Color Palette|لوحة الألوان
+Extract dominant colors|استخرج الألوان الرئيسية
+VAT Calculator|حاسبة الضريبة
+Net ↔ gross with VAT|صافي ↔ إجمالي مع الضريبة
+Loan Calculator|حاسبة القروض
+Monthly payment and interest|القسط الشهري والفوائد
+Compound Interest|الفائدة المركبة
+Savings growth over time|نمو المدخرات عبر الزمن
+Discount|الخصم
+Price after discount|السعر بعد الخصم
+Case Styles|أنماط الأحرف
+Number Base|الأنظمة العددية
+Decimal, hex, binary, octal|عشري وسداسي عشري وثنائي وثماني
+JWT Decoder|فك JWT
+Read token header and payload|اقرأ ترويسة ومحتوى الرمز
+Lorem Ipsum|نص تجريبي
+Placeholder text|نص مؤقت للتصاميم
+Bitrate|معدل البت
+Resolution|الدقة
+Original|الأصلية
+Start (seconds or mm:ss)|البداية (ثوانٍ أو دق:ثا)
+End (seconds or mm:ss)|النهاية (ثوانٍ أو دق:ثا)
+Duration (s)|المدة (ثانية)
+Width (px)|العرض (بكسل)
+Fast copy|نسخ سريع
+Precise (slower)|دقيق (أبطأ)
+Amount|المبلغ
+VAT rate %|نسبة الضريبة %
+Net → Gross|صافي ← إجمالي
+Gross → Net|إجمالي ← صافي
+Interest rate % (yearly)|الفائدة % (سنوياً)
+Years|السنوات
+Starting amount|المبلغ الابتدائي
+Monthly deposit|إيداع شهري
+Discount %|الخصم %
+Price|السعر
+Paragraphs|الفقرات
+Token|الرمز
+Number|الرقم`.split('\n').map(x=>x.split('|')).forEach(([k,v])=>AR[k]=v);
+apply();go('all');
+</script></body></html>

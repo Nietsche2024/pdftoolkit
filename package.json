@@ -1,0 +1,36 @@
+{
+  "name": "pdf-toolkit",
+  "version": "1.0.0",
+  "description": "PDF Toolkit - local PDF tools",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "3.11.174",
+    "mammoth": "^1.8.0",
+    "qrcode": "^1.5.4",
+    "adm-zip": "^0.5.16",
+    "ffmpeg-static": "^5.2.0"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "app.developedbymo.pdftoolkit",
+    "productName": "Toolkit",
+    "files": [
+      "*.js",
+      "index.html"
+    ],
+    "win": {
+      "target": "portable"
+    },
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/**"
+    ]
+  }
+}
